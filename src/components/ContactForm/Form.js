@@ -1,11 +1,18 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ContactForm, AddButton, FormLabel, FormInput } from './FormStyle';
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
+import { addContact } from '../../redux/phonebook/phonebook-actions';
+import { getValueItems } from 'redux/phonebook/phonebook-selectors';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-function Form({ onSubmit }) {
+function Form() {
+  const contacts = useSelector(getValueItems);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
 
   const inputNameId = nanoid();
   const inputNumberId = nanoid();
@@ -28,8 +35,13 @@ function Form({ onSubmit }) {
       name,
       number,
     };
-
-    onSubmit(state);
+    const findName = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+    if (findName) {
+      return toast.info(`${name} is already in your phone book`);
+    }
+    dispatch(addContact(state));
   };
 
   return (
@@ -67,7 +79,3 @@ function Form({ onSubmit }) {
 }
 
 export default Form;
-
-Form.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
