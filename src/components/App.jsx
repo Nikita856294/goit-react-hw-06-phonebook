@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import GlobalStyle from './GlobalStyle';
 import Section from './Section';
 import Container from './Container';
